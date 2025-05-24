@@ -2,7 +2,7 @@
 	"description": "A Schema for Openplanet's info.toml file, giving you autocomplete.",
 	"displayName": "Openplanet info.toml Schema",
 	"name": "openplanet-schema",
-	"publisher": "Not-Existing",
+	"publisher": "NotExisting",
 	"homepage": "https://github.com/N0tExisting/openplanet-schema/#Readme",
 	"repository": {
 		"url": "https://github.com/N0tExisting/openplanet-schema",
