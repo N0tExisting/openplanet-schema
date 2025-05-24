@@ -13,6 +13,7 @@
 	},
 	"license": "AGPL-3.0-only",
 	"version": "0.1.0",
+	"preview": true,
 	"engines": {
 		"vscode": "^1.51.0"
 	},
