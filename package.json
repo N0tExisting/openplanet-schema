@@ -3,7 +3,7 @@
 	"displayName": "Openplanet info.toml Schema",
 	"name": "openplanet-schema",
 	"publisher": "NotExisting",
-	"homepage": "https://github.com/N0tExisting/openplanet-schema/#Readme",
+	"homepage": "https://github.com/N0tExisting/openplanet-schema/#readme",
 	"repository": {
 		"url": "https://github.com/N0tExisting/openplanet-schema",
 		"type": "git"
