@@ -1,0 +1,198 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$comment": "",
+	"properties": {
+		"meta": {
+			"title": "Meta table",
+			"description": "The required `[meta]` table contains basic metadata information about the plugin.",
+			"properties": {
+				"version": {
+					"type": "string",
+					"pattern": "^\\d+(\\.\\d+)*$",
+					"format": "version",
+					"default": "1.0",
+					"description": "The version of the plugin. Openplanet will read this as `1.0` when not provided, but it is required for successful submission on the website."
+				},
+				"name": {
+					"type": "string",
+					"minLength": 1,
+					"description": "The name of the plugin. When not provided, this defaults to the identifier of the plugin."
+				},
+				"author": {
+					"type": "string",
+					"minLength": 1,
+					"description": "The author of the plugin."
+				},
+				"category": {
+					"type": "string",
+					"minLength": 1,
+					"description": "The category of the plugin. When not provided, this defaults to `Uncategorized`. It's recommended to use category names that other plugins are also using, so that they can be grouped together in a nice way."
+				},
+				"siteid": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "The ID for this plugin on the Openplanet website. This is used to check for updates. You don't have to manually add this to your file, as the review process will do this automatically for you."
+				},
+				"blocks": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "A list of plugin identifiers to block from loading if this plugin is loaded. You shouldn't include this if you don't need to block any plugins. This is useful when a plugin needs to block an older version of a plugin with a different identifier."
+				},
+				"perms": {
+					"type": "string",
+					"enum": ["free", "paid", "full"],
+					"deprecated": true,
+					"description": "**(Deprecated)** Permissions required to run this plugin. This is mostly an older value that should be avoided. You should use the Permissions API instead. Possible values for this setting are `free`, `paid`, and `full`.",
+					"x-taplo": {
+						"hidden": "",
+						"docs": {
+							"enumValues": [
+								null,
+								"Standart Access: **(Deprecated)** Not purchasable anymore.\nAllows Playing Custom Maps, TOTD, Old Campaings, etc. and seeing list of records.",
+								"Club Access: Full access to all of the games features"
+							]
+						}
+					}
+				},
+				"x-taplo": {
+					"initKeys": ["version", "name", "author"]
+				}
+			},
+			"required": ["version"],
+			"type": "object"
+		},
+		"game": {
+			"description": "The optional `[game]` table contains game-specific options for the plugin.",
+			"properties": {
+				"min_version": { "$ref": "#/definitions/game-ver" },
+				"max_version": { "$ref": "#/definitions/game-ver" }
+			},
+			"type": "object"
+		},
+		"script": {
+			"properties": {
+				"timeout": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "The timeout time for callback execution in milliseconds. Set this to 0 to disable the timeout, which will also remove the overhead of keeping track of execution time. When disabled, the plugin can potentially cause infinite loops when coded incorrectly. It's recommended to set this to 0 only if you need a bit more performance and if you're certain you're not causing infinite loops. Sometimes loading big fonts or textures can cause script timeouts as well, in which case this value can be increased or set to 0."
+				},
+				"defines": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "A list of preprocessor options to have defined during compilation. This can be useful during development. See also [the preprocessor](https://openplanet.dev/docs/reference/preprocessor)."
+				},
+				"module": {
+					"type": "string",
+					"$comment": "// TODO: Can this be enforced via regex?",
+					"minLength": 1,
+					"description": "Forces a specific module name. When this is not provided, the plugin identifier is used as the module name. This is only important when you intend to export functions to dependent plugins."
+				},
+				"exports": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "List of files to export to dependent plugins. These exported scripts will be compiled into dependent plugins, but not this plugin. See also [the plugin dependencies tutorial](https://openplanet.dev/docs/tutorials/plugin-dependencies)."
+				},
+				"shared_exports": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "List of files to export to dependent plugins. This is the same as exports, except these scripts are also compiled into this plugin. See also [the plugin dependencies tutorial](https://openplanet.dev/docs/tutorials/plugin-dependencies)."
+				},
+				"export_dependencies": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "List of plugin identifiers that are being depended on and should also be exported to any plugin depending on this plugin. For example, A depends on B depends on C, where B's exports contains types from C."
+				},
+				"dependencies": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "List of plugin identifiers to depend on. These plugins are **required** dependencies, meaning if they are not installed, the plugin won't load. See also [the plugin dependencies tutorial](https://openplanet.dev/docs/tutorials/plugin-dependencies)."
+				},
+				"optional_dependencies": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "List of plugin identifiers to depend on. These plugins are **optional** dependencies, meaning if they are not installed, the plugin will still load, but without including exported scripts or the `DEPENDENCY_x` define. See also [the plugin dependencies tutorial](https://openplanet.dev/docs/tutorials/plugin-dependencies)."
+				},
+				"imports": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": ["Dialogs.as", "Patch.as"]
+					},
+					"minItems": 1,
+					"uniqueItems": true,
+					"description": "Script filenames to include into the plugin module, located in Openplanet's Scripts folder. You can find a list of scripts shipped with Openplanet [here](https://openplanet.dev/docs/reference/imports).",
+					"x-taplo": {
+						"docs": {
+							"enumValues": [
+								"Simple dialog rendering framework.",
+								"Helper classes for applying memory patches."
+							]
+						}
+					}
+				}
+			},
+			"type": "object",
+			"description": "The optional `[script]` table configures the script runtime for the plugin."
+		}
+	},
+	"required": ["meta"],
+	"type": "object",
+	"title": "The `info.toml` file specifies important metadata for a plugin. It has a number of possible options you can set. The format of this file is toml.",
+	"definitions": {
+		"game-ver": {
+			"type": "string",
+			"pattern": "20[2-9]\\d-(1[12]|0[0-9])-(3[01]|[0-2]\\d( (2[0-3]|[01]\\d):([0-5]\\d))?)",
+			"format": "date-time",
+			"x-taplo": {
+				"links": {
+					"key": "https://openplanet.dev/docs/reference/info-toml#:~:text=automatically%20for%20you.-,Game%20table,-The%20optional%20%5Bgame"
+				}
+			}
+		},
+		"plugin-ident": {
+			"type": "string",
+			"$comment": "// TODO: Is there an API that lists all plugin identifiers"
+		}
+	},
+	"x-taplo": {
+		"initKeys": ["meta"],
+		"links": {
+			"key": "https://openplanet.dev/docs/reference/info-toml"
+		}
+	}
+}
