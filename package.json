@@ -49,9 +49,9 @@
 		"vs": "vsce"
 	},
 	"devDependencies": {
-		"@types/node": "^20",
+		"@types/node": "^20.19.13",
 		"@types/vscode": "^1.51.0",
-		"@vscode/vsce": "^3.4.2",
-		"typescript": "^5.8.2"
+		"@vscode/vsce": "^3.6.0",
+		"typescript": "^5.9.2"
 	}
 }
